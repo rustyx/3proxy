@@ -10,6 +10,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <locale.h>
+#include <stdio.h>
 
 #ifdef  __cplusplus
 extern "C" {
@@ -23,6 +24,7 @@ static struct auth alwaysauth;
 
 static char sidbuf[4096];
 static PSID psid = (PSID)sidbuf;
+static char *defdomain;
 
 #ifdef  __cplusplus
 extern "C" {
@@ -40,14 +42,22 @@ extern "C" {
 	dom = strchr((char *)param->username, '\\');
 	if(dom)*dom++=0;
 	if(!LogonUser(	dom?dom:(char *)param->username,
-					dom?(char *)param->username:NULL,
+					dom?(char *)param->username:defdomain,
 					param->password,
 					LOGON32_LOGON_NETWORK,
 					LOGON32_PROVIDER_DEFAULT,
-					&h))return 5;
+					&h)) {
+		snprintf(tokenbuf, sizeof(tokenbuf), "LogonUser(%s) failed: %d", param->username, GetLastError());
+		(*(param->srv->logfunc))(param, tokenbuf);
+		return 5;
+	}
 
 	if(dom)*(dom-1)='\\';
-	if(!GetTokenInformation(h, TokenGroups, ptg, sizeof(tokenbuf), &dw)) return 6;
+	if(!GetTokenInformation(h, TokenGroups, ptg, sizeof(tokenbuf), &dw)) {
+		snprintf(tokenbuf, sizeof(tokenbuf), "GetTokenInformation(%s) failed: %d", param->username, GetLastError());
+		(*(param->srv->logfunc))(param, tokenbuf);
+		return 6;
+	}
 	CloseHandle(h);
 	sidlen = GetLengthSid(psid);
 	for(i=0; i < ptg->GroupCount; i++){
@@ -55,10 +65,13 @@ extern "C" {
 			if(!memcmp((void *)ptg->Groups[i].Sid, (void *)psid, sidlen)) {
 				setlocale(LC_CTYPE, ".ACP");
 				_strlwr(param->username);
+				//printf("auth ok: %s\n", param->username);
 				return 0;
 			}
 		}
 	}
+	snprintf(tokenbuf, sizeof(tokenbuf), "Sid not found (%s)", param->username);
+	(*(param->srv->logfunc))(param, tokenbuf);
 	return 7;
  }
 
@@ -74,19 +87,30 @@ int WindowsAuthentication(struct pluginlink * pluginlink, int argc, char** argv)
 	static int loaded = 0;
 
 
-	if(argc != 2) return 11;
+	if(argc < 2) return 11;
 	dlen = sizeof(tmpbuf)/sizeof(TCHAR);
 	sidlen = sizeof(sidbuf);
 	if(!LookupAccountName(NULL, argv[1], psid, &sidlen,
-		(LPTSTR) tmpbuf, &dlen, &snu)) return 100000 + (int)GetLastError();
-	if(snu != SidTypeGroup && snu != SidTypeAlias && snu != SidTypeWellKnownGroup) return 12;
+		(LPTSTR) tmpbuf, &dlen, &snu)) {
+		printf("Group "%s" not found: %d\n", argv[1], GetLastError());
+		return 100000 + (int)GetLastError();
+	}
+	if(snu != SidTypeGroup && snu != SidTypeAlias && snu != SidTypeWellKnownGroup) {
+		printf("Sid of "%s" is not good.\n", argv[1]);
+		return 12;
+	}
 	if(!loaded){
 		alwaysauth.authenticate = windowsfunc;
 		alwaysauth.authorize = pluginlink->checkACL;
 		alwaysauth.desc = "windows";
 		alwaysauth.next = pluginlink->authfuncs->next;
 		pluginlink->authfuncs->next = &alwaysauth;
-		loaded = 1;
+		printf("win auth loaded (%s)\n", argv[1]);
+		if (argc > 2) {
+			defdomain = strdup(argv[2]);
+			printf("default domain = %s\n", defdomain);
+		}
+    loaded = 1;
 	}
 	return 0;
 }
