@@ -539,7 +539,7 @@ static int h_nserver(int argc, unsigned char **argv){
 		if((str = strchr((char *)argv[1], '/')))
 			*str = 0;
 		if(!getip46(46, argv[1], (struct sockaddr *)&nservers[numservers].addr)) return 1;
-		*SAPORT(&nservers[numservers].addr) = htons(53);
+		*SAPORT(&nservers[numservers].addr) = htons(argc > 1 ? atoi(argv[2]) : 53);
 		if(str) {
 			nservers[numservers].usetcp = strstr(str + 1, "tcp")? 1:0;
 			*str = '/';
@@ -557,7 +557,7 @@ static int h_authnserver(int argc, unsigned char **argv){
 	if((str = strchr((char *)argv[1], '/')))
 		*str = 0;
 	if(!getip46(46, argv[1], (struct sockaddr *)&authnserver.addr)) return 1;
-	*SAPORT(&authnserver.addr) = htons(53);
+	*SAPORT(&authnserver.addr) = htons(argc > 1 ? atoi(argv[2]) : 53);
 	if(str) {
 		authnserver.usetcp = strstr(str + 1, "tcp")? 1:0;
 		*str = '/';
@@ -1355,7 +1355,7 @@ struct commands commandhandlers[]={
 	{commandhandlers+23, "users", h_users, 2, 0},
 	{commandhandlers+24, "maxconn", h_maxconn, 2, 2},
 	{commandhandlers+25, "flush", h_flush, 1, 1},
-	{commandhandlers+26, "nserver", h_nserver, 2, 2},
+	{commandhandlers+26, "nserver", h_nserver, 2, 3},
 	{commandhandlers+27, "fakeresolve", h_fakeresolve, 1, 1},
 	{commandhandlers+28, "nscache", h_nscache, 2, 2},
 	{commandhandlers+29, "nscache6", h_nscache6, 2, 2},
@@ -1386,7 +1386,7 @@ struct commands commandhandlers[]={
 	{commandhandlers+54, "icqpr", h_proxy, 4, 0},
 	{commandhandlers+55, "msnpr", h_proxy, 4, 0},
 	{commandhandlers+56, "delimchar",h_delimchar, 2, 2},
-	{commandhandlers+57, "authnserver", h_authnserver, 2, 2},
+	{commandhandlers+57, "authnserver", h_authnserver, 2, 3},
 	{specificcommands, 	 "", h_noop, 1, 0}
 };
 
