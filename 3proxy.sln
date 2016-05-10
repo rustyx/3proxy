@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "3proxy", "3proxy.vcxproj", 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WindowsAuthentication", "src\plugins\WindowsAuthentication\WindowsAuthentication.vcxproj", "{B0F7A28C-47B2-4047-B8DE-23691CE233DF}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "utf8tocp1251", "src\plugins\utf8tocp1251\utf8tocp1251.vcxproj", "{E2936A09-C3C2-417B-9D4E-EA3690B527C9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +33,14 @@ Global
 		{B0F7A28C-47B2-4047-B8DE-23691CE233DF}.Release|x64.Build.0 = Release|x64
 		{B0F7A28C-47B2-4047-B8DE-23691CE233DF}.Release|x86.ActiveCfg = Release|Win32
 		{B0F7A28C-47B2-4047-B8DE-23691CE233DF}.Release|x86.Build.0 = Release|Win32
+		{E2936A09-C3C2-417B-9D4E-EA3690B527C9}.Debug|x64.ActiveCfg = Debug|x64
+		{E2936A09-C3C2-417B-9D4E-EA3690B527C9}.Debug|x64.Build.0 = Debug|x64
+		{E2936A09-C3C2-417B-9D4E-EA3690B527C9}.Debug|x86.ActiveCfg = Debug|Win32
+		{E2936A09-C3C2-417B-9D4E-EA3690B527C9}.Debug|x86.Build.0 = Debug|Win32
+		{E2936A09-C3C2-417B-9D4E-EA3690B527C9}.Release|x64.ActiveCfg = Release|x64
+		{E2936A09-C3C2-417B-9D4E-EA3690B527C9}.Release|x64.Build.0 = Release|x64
+		{E2936A09-C3C2-417B-9D4E-EA3690B527C9}.Release|x86.ActiveCfg = Release|Win32
+		{E2936A09-C3C2-417B-9D4E-EA3690B527C9}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
