@@ -8,10 +8,10 @@
 
 BUILDDIR = ../bin64/
 CC = cl
-CFLAGS = /nologo /MT /W3 /Ox /EHs- /GS /GA /GF /D "MSVC" /D "WITH_STD_MALLOC" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "_WIN32" /Fp"proxy.pch" /FD /c
+CFLAGS = /nologo /MT /W3 /O2 /EHs- /GS /GA /GF /Zi /D "MSVC" /D "WITH_STD_MALLOC" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "_WIN32" /Fp"proxy.pch" /Fd"vc140.pdb" /FD /c
 COUT = /Fo
 LN = link
-LDFLAGS = /nologo /subsystem:console /incremental:no /machine:x64
+LDFLAGS = /nologo /subsystem:console /incremental:no /machine:x64 /DEBUG /PDB:"$(*B).pdb"
 DLFLAGS = /DLL
 DLSUFFICS = .dll
 LIBS = ws2_32.lib advapi32.lib odbc32.lib user32.lib kernel32.lib Gdi32.lib libeay32.lib ssleay32.lib
@@ -26,7 +26,8 @@ REMOVECOMMAND = del 2>NUL >NUL
 TYPECOMMAND = type
 COMPATLIBS =
 MAKEFILE = Makefile.msvc64
-PLUGINS = utf8tocp1251 WindowsAuthentication TrafficPlugin StringsPlugin PCREPlugin FilePlugin SSLPlugin
+#PLUGINS = utf8tocp1251 WindowsAuthentication TrafficPlugin StringsPlugin PCREPlugin FilePlugin SSLPlugin
+PLUGINS = WindowsAuthentication
 VERFILE = $(VERFILE)
 
 #../3proxy.res:
