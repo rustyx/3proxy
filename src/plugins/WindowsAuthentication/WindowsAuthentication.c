@@ -92,11 +92,11 @@ int WindowsAuthentication(struct pluginlink * pluginlink, int argc, char** argv)
 	sidlen = sizeof(sidbuf);
 	if(!LookupAccountName(NULL, argv[1], psid, &sidlen,
 		(LPTSTR) tmpbuf, &dlen, &snu)) {
-		printf("Group "%s" not found: %d\n", argv[1], GetLastError());
+		printf("Group \"%s\" not found: %d\n", argv[1], GetLastError());
 		return 100000 + (int)GetLastError();
 	}
 	if(snu != SidTypeGroup && snu != SidTypeAlias && snu != SidTypeWellKnownGroup) {
-		printf("Sid of "%s" is not good.\n", argv[1]);
+		printf("Sid of \"%s\" is not good.\n", argv[1]);
 		return 12;
 	}
 	if(!loaded){
